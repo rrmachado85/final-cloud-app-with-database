@@ -39,10 +39,25 @@
     {% if grade > 80 %}
     <div class="alert alert-success">
        <!--HINT Display passed info -->
+      
     </div>
         {% else %}
         <div class="alert alert-danger">
             <!--HINT Display failed info -->
+            {{submission.choices.all}}
+            <div class="form-group">
+                {% for choice in submission.choices.all %}
+                    {% if choice.is_correct %}
+                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                            <li style="color:green"><b>Correct answer: {{ choice.choice_text }}</b></li>
+                        </ul> 
+                    {% else %}
+                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                            <li>{{ choice.choice_text }}</li>
+                        </ul> 
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
             <a class="btn btn-link text-danger" href="{% url 'onlinecourse:course_details' course.id %}">Re-test</a>
         {% endif %}
@@ -54,10 +69,17 @@
             {% csrf_token %}
             <div class="form-group">
                 {% for choice in question.choice_set.all %}
-                <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
-                    <li>{{ choice.choice_text }}</li>
-                </ul> 
+                    {% if choice.is_correct %}
+                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                            <li style="color:green"><b>Correct answer: {{ choice.choice_text }}</b></li>
+                        </ul> 
+                    {% else %}
+                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                            <li>{{ choice.choice_text }}</li>
+                        </ul> 
+                    {% endif %}
                 {% endfor %}
+               
             </div>
         </div>
         {% endfor %}
