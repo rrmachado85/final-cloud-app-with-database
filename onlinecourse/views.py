@@ -117,8 +117,6 @@ def submit(request, course_id):
     userEnrolled = Enrollment.objects.get(user=user, course=course)
     # Create a submission object referring to the enrollment
     Submission.objects.create(enrollment=userEnrolled)
-    if request.method == "POST":
-
 
 
 
