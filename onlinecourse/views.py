@@ -129,7 +129,6 @@ def submit(request, course_id):
     submitObj.choices.set(extract_answers(request))
     submitObj.save()
     return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course.id,submitObj.id,)))
-    #return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(submitObj.id,)))
 
 # <HINT> Create an exam result view to check if learner passed exam and show their question results and result for each question,
 # you may implement it based on the following logic:
@@ -138,7 +137,19 @@ def submit(request, course_id):
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
 def show_exam_result(request, course_id, submission_id):
-    return render(request, 'onlinecourse/exam_result_bootstrap.html')
+    context = {}
+    course=get_object_or_404(Course, pk=course_id)
+    submission=get_object_or_404(Submission, pk=submission_id)
+    #choices = Submission.objects.choices.all()
+    #for choice in choices:
+    #    if.is_authenticated:
+    #    course.is_enrolled = check_if_enrolled(user, course)
+    #return courses
+
+    context['grade'] = 70
+    context['course'] = course
+    context['submission'] = submission
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
 
