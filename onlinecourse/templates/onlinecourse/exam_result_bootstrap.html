@@ -45,7 +45,7 @@
         <div class="alert alert-danger">
             <!--HINT Display failed info -->
             {{submission.choices.all}}
-            {{options}}
+            {{answers}}
             <div class="form-group">
                 {% for choice in answers %}
                     {% if choice.is_correct %}
@@ -64,12 +64,13 @@
         {% endif %}
         <div class="card-columns-vertical mt-1">
         <h5 class="">Exam results</h5>
-        {% for question in course.question_set.all %}
+        {% for question in answers %}
+        
         <div class="card mt-1">
             <div class="card-header"><h5>{{ question.question_text}}</h5></div>
             {% csrf_token %}
             <div class="form-group">
-                {% for ans in answers %}           
+                {% for ans in question.choice %}
                     {% if ans.submit %}
                         {% if ans.choice.is_correct %}
                         <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
@@ -80,11 +81,11 @@
                             <li style="color:red"><b>Incorrect answer: {{ ans.choice.choice_text }}</b></li>
                         </ul>
                         {% endif %}  
-                    {% else %}
-                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
-                         <li>{{ ans.choice.choice_text }}</li>
-                        </ul> 
-                    {% endif %}  
+                    {% else %} 
+                    <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                        <li> {{ ans.choice.choice_text }}</li>
+                    </ul>
+                    {% endif %} 
                 {% endfor %}           
             </div>
         </div>

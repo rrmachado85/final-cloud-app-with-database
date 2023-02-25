@@ -133,13 +133,18 @@ def submit(request, course_id):
     return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course.id,submitObj.id,)))
 
 class Question :
-    def __init__(self,question,choices):
+    def __init__(self,question):
         self.question_text=question
-        self.choice=choices
+        self.choice=[]
+    
+    def add_Choice(self,newChoice):
+        self.choice.append(newChoice)
+
 class Answer :
      def __init__(self,choice,submit):
-        self.choice_text=choice
+        self.choice=choice
         self.submit=submit
+
 # <HINT> Create an exam result view to check if learner passed exam and show their question results and result for each question,
 # you may implement it based on the following logic:
         # Get course and submission based on their ids
@@ -151,25 +156,33 @@ def show_exam_result(request, course_id, submission_id):
     context = {}
     answers = []
     options = []
-    i=0
+    
+    i=1
     course=get_object_or_404(Course, pk=course_id)
     submission=get_object_or_404(Submission, pk=submission_id)
     submits = submission.choices.all()
     questions = course.question_set.all()
     for question in questions:
         choices=question.choice_set.all()
+        collection=Question(question.question_text)
         for choice in choices:
-            answers.append(Answer(choice,False))
-        options.append(Question(question.question_text,answers))   
-    i=1
-    for option in options:
-        for submit in submits:
-                if(submit.id == option.id):
-                    answers.append(Answer(option,True))
-                    i=0
-        if(i):
-            answers.append(False)
-        i=1
+            for submit in submits:
+               if(submit.id == choice.id):
+                collection.choice.append(Answer(choice,True))
+                i=0
+            if(i):
+               collection.choice.append(Answer(choice,False))
+            i=1
+        answers.append(collection)
+    #i=1
+    #for option in options:
+    #    for submit in submits:
+    #            if(submit.id == option.id):
+    #                answers.append(Answer(option,True))
+    #                i=0
+    #    if(i):
+    #        answers.append(False)
+    #    i=1
         
 
     context['grade'] = 70
