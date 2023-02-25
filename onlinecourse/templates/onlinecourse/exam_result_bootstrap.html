@@ -45,8 +45,9 @@
         <div class="alert alert-danger">
             <!--HINT Display failed info -->
             {{submission.choices.all}}
+            {{options}}
             <div class="form-group">
-                {% for choice in submission.choices.all %}
+                {% for choice in answers %}
                     {% if choice.is_correct %}
                         <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
                             <li style="color:green"><b>Correct answer: {{ choice.choice_text }}</b></li>

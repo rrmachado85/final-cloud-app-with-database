@@ -138,17 +138,26 @@ def submit(request, course_id):
         # Calculate the total score
 def show_exam_result(request, course_id, submission_id):
     context = {}
+    answers = []
+    options = []
     course=get_object_or_404(Course, pk=course_id)
     submission=get_object_or_404(Submission, pk=submission_id)
-    #choices = Submission.objects.choices.all()
+    submit = submission.choices.all()
+    questions = course.question_set.all()
+    for question in questions:
+        choices=question.choice_set.all()
+        for choice in choices:
+            options.append(choice)
+             
+    #choices = questions.choice_set.all()
     #for choice in choices:
-    #    if.is_authenticated:
-    #    course.is_enrolled = check_if_enrolled(user, course)
-    #return courses
+    #    answers.append(choice)
 
     context['grade'] = 70
     context['course'] = course
     context['submission'] = submission
+    context['answers'] = answers
+    context['options'] = options
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
