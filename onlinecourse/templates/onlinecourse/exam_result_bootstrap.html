@@ -38,14 +38,11 @@
 <div class="container-fluid">
     {% if grade > 80 %}
     <div class="alert alert-success">
-       <!--HINT Display passed info -->
-      
+       <label><b>Congratulations, {{  user.username  }}!</b> You have passed the exam and completed the course with score {{grade}}/100 </label>
     </div>
         {% else %}
         <div class="alert alert-danger">
-            <!--HINT Display failed info -->
-            {{submission.choices.all}}
-            {{total_grade}}
+            <label><b>Failed</b> Sorry, {{  user.username  }}! You have failed exam with score {{grade}}/100 </label>
             <div class="form-group">
                 {% for choice in answers %}
                     {% if choice.is_correct %}

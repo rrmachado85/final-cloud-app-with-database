@@ -158,12 +158,15 @@ def show_exam_result(request, course_id, submission_id):
     options = []
     
     i=1
+    total_choice_grade = 0
     total_grade = 0
+    total_question = 0
     course=get_object_or_404(Course, pk=course_id)
     submission=get_object_or_404(Submission, pk=submission_id)
     submits = submission.choices.all()
     questions = course.question_set.all()
     for question in questions:
+        total_grade = total_grade + question.grade
         choices=question.choice_set.all()
         collection=Question(question.question_text)
         for choice in choices:
@@ -171,29 +174,23 @@ def show_exam_result(request, course_id, submission_id):
                if(submit.id == choice.id):
                 collection.choice.append(Answer(choice,True))
                 if (choice.is_correct):
-                    total_grade=total_grade + choice.grade_choice
+                    total_question=total_question + choice.grade_choice
                 i=0
             if(i):
                collection.choice.append(Answer(choice,False))
             i=1
+        if (total_question == question.grade):
+            total_choice_grade = total_choice_grade + total_question
+        else:
+            total_choice_grade = total_choice_grade
+        total_question=0
         answers.append(collection)
-    #i=1
-    #for option in options:
-    #    for submit in submits:
-    #            if(submit.id == option.id):
-    #                answers.append(Answer(option,True))
-    #                i=0
-    #    if(i):
-    #        answers.append(False)
-    #    i=1
-        
 
-    context['grade'] = 70
+    result = (total_choice_grade) / (total_grade) * 100      
+
+    context['grade'] = int(result)
     context['course'] = course
-    context['submission'] = submission
     context['answers'] = answers
-    context['total_grade'] = total_grade
-    context['submits'] = submits
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
