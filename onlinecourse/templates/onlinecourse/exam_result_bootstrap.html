@@ -69,18 +69,23 @@
             <div class="card-header"><h5>{{ question.question_text}}</h5></div>
             {% csrf_token %}
             <div class="form-group">
-                {% for choice in question.choice_set.all %}
-                    {% if choice.is_correct %}
+                {% for ans in answers %}           
+                    {% if ans.submit %}
+                        {% if ans.choice.is_correct %}
                         <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
-                            <li style="color:green"><b>Correct answer: {{ choice.choice_text }}</b></li>
-                        </ul> 
+                          <li style="color:green"><b>Correct answer: {{ ans.choice.choice_text }}</b></li>
+                        </ul>
+                        {% else %}
+                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                            <li style="color:red"><b>Incorrect answer: {{ ans.choice.choice_text }}</b></li>
+                        </ul>
+                        {% endif %}  
                     {% else %}
                         <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
-                            <li>{{ choice.choice_text }}</li>
+                         <li>{{ ans.choice.choice_text }}</li>
                         </ul> 
-                    {% endif %}
-                {% endfor %}
-               
+                    {% endif %}  
+                {% endfor %}           
             </div>
         </div>
         {% endfor %}

@@ -69,6 +69,8 @@ def check_if_enrolled(user, course):
     return is_enrolled
 
 
+
+
 # CourseListView
 class CourseListView(generic.ListView):
     template_name = 'onlinecourse/course_list_bootstrap.html'
@@ -130,6 +132,14 @@ def submit(request, course_id):
     submitObj.save()
     return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course.id,submitObj.id,)))
 
+class Question :
+    def __init__(self,question,choices):
+        self.question_text=question
+        self.choice=choices
+class Answer :
+     def __init__(self,choice,submit):
+        self.choice_text=choice
+        self.submit=submit
 # <HINT> Create an exam result view to check if learner passed exam and show their question results and result for each question,
 # you may implement it based on the following logic:
         # Get course and submission based on their ids
@@ -137,27 +147,37 @@ def submit(request, course_id):
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
 def show_exam_result(request, course_id, submission_id):
+   
     context = {}
     answers = []
     options = []
+    i=0
     course=get_object_or_404(Course, pk=course_id)
     submission=get_object_or_404(Submission, pk=submission_id)
-    submit = submission.choices.all()
+    submits = submission.choices.all()
     questions = course.question_set.all()
     for question in questions:
         choices=question.choice_set.all()
         for choice in choices:
-            options.append(choice)
-             
-    #choices = questions.choice_set.all()
-    #for choice in choices:
-    #    answers.append(choice)
+            answers.append(Answer(choice,False))
+        options.append(Question(question.question_text,answers))   
+    i=1
+    for option in options:
+        for submit in submits:
+                if(submit.id == option.id):
+                    answers.append(Answer(option,True))
+                    i=0
+        if(i):
+            answers.append(False)
+        i=1
+        
 
     context['grade'] = 70
     context['course'] = course
     context['submission'] = submission
     context['answers'] = answers
     context['options'] = options
+    context['submits'] = submits
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
