@@ -45,7 +45,7 @@
         <div class="alert alert-danger">
             <!--HINT Display failed info -->
             {{submission.choices.all}}
-            {{answers}}
+            {{total_grade}}
             <div class="form-group">
                 {% for choice in answers %}
                     {% if choice.is_correct %}
@@ -82,9 +82,15 @@
                         </ul>
                         {% endif %}  
                     {% else %} 
-                    <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
-                        <li> {{ ans.choice.choice_text }}</li>
-                    </ul>
+                        {% if ans.choice.is_correct %}
+                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                            <li style="color:orange"><b>Not selected: {{ ans.choice.choice_text }}</b></li>
+                        </ul>
+                        {% else %}
+                        <ul class="list-unstyled" style="margin: 0; padding-left:1.5em;">
+                            <li> {{ ans.choice.choice_text }}</li>
+                        </ul>
+                        {% endif %}  
                     {% endif %} 
                 {% endfor %}           
             </div>

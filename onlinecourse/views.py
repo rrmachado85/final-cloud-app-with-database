@@ -158,6 +158,7 @@ def show_exam_result(request, course_id, submission_id):
     options = []
     
     i=1
+    total_grade = 0
     course=get_object_or_404(Course, pk=course_id)
     submission=get_object_or_404(Submission, pk=submission_id)
     submits = submission.choices.all()
@@ -169,6 +170,8 @@ def show_exam_result(request, course_id, submission_id):
             for submit in submits:
                if(submit.id == choice.id):
                 collection.choice.append(Answer(choice,True))
+                if (choice.is_correct):
+                    total_grade=total_grade + choice.grade_choice
                 i=0
             if(i):
                collection.choice.append(Answer(choice,False))
@@ -189,7 +192,7 @@ def show_exam_result(request, course_id, submission_id):
     context['course'] = course
     context['submission'] = submission
     context['answers'] = answers
-    context['options'] = options
+    context['total_grade'] = total_grade
     context['submits'] = submits
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
